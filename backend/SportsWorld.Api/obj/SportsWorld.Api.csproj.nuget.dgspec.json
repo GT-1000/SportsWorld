@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/gabrieltapia/Desktop/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj": {}
+    "/Users/yasinarshad/Library/Mobile Documents/com~apple~CloudDocs/webutvikling/visual-studio-code/eksamen2025/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj": {}
   },
   "projects": {
-    "/Users/gabrieltapia/Desktop/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj": {
+    "/Users/yasinarshad/Library/Mobile Documents/com~apple~CloudDocs/webutvikling/visual-studio-code/eksamen2025/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/gabrieltapia/Desktop/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj",
+        "projectUniqueName": "/Users/yasinarshad/Library/Mobile Documents/com~apple~CloudDocs/webutvikling/visual-studio-code/eksamen2025/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj",
         "projectName": "SportsWorld.Api",
-        "projectPath": "/Users/gabrieltapia/Desktop/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj",
-        "packagesPath": "/Users/gabrieltapia/.nuget/packages/",
-        "outputPath": "/Users/gabrieltapia/Desktop/SportsWorld/backend/SportsWorld.Api/obj/",
+        "projectPath": "/Users/yasinarshad/Library/Mobile Documents/com~apple~CloudDocs/webutvikling/visual-studio-code/eksamen2025/SportsWorld/backend/SportsWorld.Api/SportsWorld.Api.csproj",
+        "packagesPath": "/Users/yasinarshad/.nuget/packages/",
+        "outputPath": "/Users/yasinarshad/Library/Mobile Documents/com~apple~CloudDocs/webutvikling/visual-studio-code/eksamen2025/SportsWorld/backend/SportsWorld.Api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/gabrieltapia/.nuget/NuGet/NuGet.Config"
+          "/Users/yasinarshad/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -59,6 +60,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -67,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.416/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.307/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
