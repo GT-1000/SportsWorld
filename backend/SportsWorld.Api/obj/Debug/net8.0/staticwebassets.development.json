@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"ContentRoots":["/Users/yasinarshad/Library/Mobile Documents/com~apple~CloudDocs/webutvikling/visual-studio-code/eksamen2025/SportsWorld/backend/SportsWorld.Api/wwwroot/"],"Root":{"Children":{"index.html":{"Children":null,"Asset":{"ContentRootIndex":0,"SubPath":"index.html"},"Patterns":null},"css":{"Children":{"site.css":{"Children":null,"Asset":{"ContentRootIndex":0,"SubPath":"css/site.css"},"Patterns":null}},"Asset":null,"Patterns":null}},"Asset":null,"Patterns":[{"ContentRootIndex":0,"Pattern":"**","Depth":0}]}}
-=======
 {"ContentRoots":["/Users/gabrieltapia/Desktop/SportsWorld/backend/SportsWorld.Api/wwwroot/"],"Root":{"Children":{"css":{"Children":{"site.css":{"Children":null,"Asset":{"ContentRootIndex":0,"SubPath":"css/site.css"},"Patterns":null}},"Asset":null,"Patterns":null},"index.html":{"Children":null,"Asset":{"ContentRootIndex":0,"SubPath":"index.html"},"Patterns":null}},"Asset":null,"Patterns":[{"ContentRootIndex":0,"Pattern":"**","Depth":0}]}}
->>>>>>> 444b415b7bf9e8cbf69af6e9fd91d36578a465cc

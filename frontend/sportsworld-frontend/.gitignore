@@ -1,24 +1,29 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
+# node
+node_modules/
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# editor
+.DS_Store
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.idea/
+
+# frontend build
+frontend/sportsworld-frontend/node_modules/
+frontend/sportsworld-frontend/dist/
+
+# backend build
+backend/SportsWorld.Api/bin/
+backend/SportsWorld.Api/obj/
+
+# database
+backend/SportsWorld.Api/*.db
+backend/SportsWorld.Api/*.db-shm
+backend/SportsWorld.Api/*.db-wal
