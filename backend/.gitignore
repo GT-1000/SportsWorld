@@ -1,0 +1,22 @@
+# Build folders
+bin/
+obj/
+
+# SQLite database
+*.db
+*.db-shm
+*.db-wal
+
+# User specific files
+.vscode/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Publish output
+publish/
+
+# Temp
+*.tmp
