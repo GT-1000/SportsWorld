@@ -27,4 +27,13 @@ export const athleteService = {
       body: JSON.stringify(athlete),
     });
   },
+
+  async createAthlete(athlete: Athlete): Promise<Athlete> {
+    const response = await fetch(API_URL,{
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(athlete),
+    });
+    return await response.json();
+  },
 };
