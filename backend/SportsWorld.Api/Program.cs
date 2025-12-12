@@ -5,30 +5,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddControllers();
+
+// Database (SQLite)
+builder.Services.AddDbContext<SportsWorldContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add database
-builder.Services.AddDbContext<SportsWorldContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("SportsWorldConnection")));
-
-// Enable CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-        });
-});
-
 var app = builder.Build();
 
-// Use CORS
-app.UseCors("AllowFrontend");
-
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -36,6 +24,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

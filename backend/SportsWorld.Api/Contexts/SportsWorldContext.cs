@@ -10,5 +10,7 @@ public class SportsWorldContext : DbContext
     {
     }
 
-    public DbSet<Athlete> Athletes => Set<Athlete>();
+    public DbSet<Athlete> Athletes { get; set; }
+    public DbSet<Finance> Finances { get; set; }
+    public DbSet<Venue> Venues { get; set; }
 }

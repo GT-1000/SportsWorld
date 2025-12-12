@@ -44,7 +44,7 @@ public class AthletesController : ControllerBase
             .ToListAsync();
     }
 
-    // ✅ POST: api/athletes
+    // POST: api/athletes
     [HttpPost]
     public async Task<ActionResult<Athlete>> CreateAthlete(Athlete athlete)
     {
@@ -54,7 +54,7 @@ public class AthletesController : ControllerBase
         return CreatedAtAction(nameof(GetAthleteById), new { id = athlete.Id }, athlete);
     }
 
-    // ✅ GET: api/athletes/{id}
+    // GET: api/athletes/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<Athlete>> GetAthleteById(int id)
     {
