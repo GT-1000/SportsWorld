@@ -7,6 +7,9 @@ obj/
 *.db-shm
 *.db-wal
 
+# Uploaded images
+wwwroot/images/
+
 # User specific files
 .vscode/
 *.user

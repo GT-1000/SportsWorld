@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import type { Athlete } from "../interfaces/athlete";
 import { athleteService } from "../services/athleteService";
-import "./AdminAthletesPage.css"; // CSS for styling
 
 export default function AdminAthletesPage() {
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Athlete | null>(null);
 
-  // Load athletes on page load
   useEffect(() => {
     loadAthletes();
   }, []);
@@ -18,7 +16,6 @@ export default function AdminAthletesPage() {
     setAthletes(data);
   }
 
-  // Search function
   async function handleSearch(query: string) {
     if (query.trim() === "") {
       loadAthletes();
@@ -28,26 +25,25 @@ export default function AdminAthletesPage() {
     setAthletes(results);
   }
 
-  // Delete athlete
   async function handleDelete(id: number) {
-    if (!confirm("Are you sure you want to delete this athlete ?")) return;
+    if (!confirm("Are you sure you want to delete this athlete?")) return;
     await athleteService.deleteAthlete(id);
     await loadAthletes();
   }
 
-  // Start edit mode
   function startEdit(a: Athlete) {
     setEditingId(a.id);
     setEditData({ ...a });
   }
 
-  // Handle Editing Input Changes
-  function handleEditChange(field: keyof Athlete, value: string | number | boolean) {
+  function handleEditChange(
+    field: keyof Athlete,
+    value: string | number | boolean
+  ) {
     if (!editData) return;
     setEditData({ ...editData, [field]: value });
   }
 
-  // Save edit
   async function saveEdit() {
     if (!editData) return;
     await athleteService.updateAthlete(editData);
@@ -56,7 +52,6 @@ export default function AdminAthletesPage() {
     loadAthletes();
   }
 
-  // Cancel edit
   function cancelEdit() {
     setEditingId(null);
     setEditData(null);
@@ -64,10 +59,8 @@ export default function AdminAthletesPage() {
 
   return (
     <div className="admin-container">
-
       <h1 className="admin-title">Administer Athletes</h1>
 
-      {/*Search input*/}
       <input
         type="text"
         placeholder="Search by name"
@@ -81,6 +74,7 @@ export default function AdminAthletesPage() {
         <table className="athlete-table">
           <thead>
             <tr>
+              <th>Image</th>
               <th>Name</th>
               <th>Gender</th>
               <th>Price</th>
@@ -95,13 +89,32 @@ export default function AdminAthletesPage() {
 
               return (
                 <tr key={a.id}>
+                  {/* Image */}
+                  <td>
+                    {a.image ? (
+                      <img
+                        src={a.image}
+                        alt={a.name}
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                        }}
+                      />
+                    ) : (
+                      "No image"
+                    )}
+                  </td>
 
-                  {/*Name*/}
+                  {/* Name */}
                   <td>
                     {isEditing ? (
                       <input
                         value={editData?.name || ""}
-                        onChange={(e) => handleEditChange("name", e.target.value)}
+                        onChange={(e) =>
+                          handleEditChange("name", e.target.value)
+                        }
                         className="edit-input"
                       />
                     ) : (
@@ -109,12 +122,14 @@ export default function AdminAthletesPage() {
                     )}
                   </td>
 
-                  {/*Gender*/}
+                  {/* Gender */}
                   <td>
                     {isEditing ? (
                       <select
                         value={editData?.gender || ""}
-                        onChange={(e) => handleEditChange("gender", e.target.value)}
+                        onChange={(e) =>
+                          handleEditChange("gender", e.target.value)
+                        }
                         className="edit-select"
                       >
                         <option value="Male">Male</option>
@@ -125,13 +140,15 @@ export default function AdminAthletesPage() {
                     )}
                   </td>
 
-                  {/*Price*/}
+                  {/* Price */}
                   <td>
                     {isEditing ? (
                       <input
                         type="number"
                         value={editData?.price || ""}
-                        onChange={(e) => handleEditChange("price", Number(e.target.value))}
+                        onChange={(e) =>
+                          handleEditChange("price", Number(e.target.value))
+                        }
                         className="edit-input"
                       />
                     ) : (
@@ -139,12 +156,17 @@ export default function AdminAthletesPage() {
                     )}
                   </td>
 
-                  {/*Purchased*/}
+                  {/* Purchased */}
                   <td>
                     {isEditing ? (
                       <select
                         value={editData?.purchaseStatus ? "true" : "false"}
-                        onChange={(e) => handleEditChange("purchaseStatus", e.target.value === "true")}
+                        onChange={(e) =>
+                          handleEditChange(
+                            "purchaseStatus",
+                            e.target.value === "true"
+                          )
+                        }
                         className="edit-select"
                       >
                         <option value="false">No</option>
@@ -157,7 +179,7 @@ export default function AdminAthletesPage() {
                     )}
                   </td>
 
-                  {/*Action button*/}
+                  {/* Actions */}
                   <td>
                     {!isEditing ? (
                       <>
@@ -167,7 +189,6 @@ export default function AdminAthletesPage() {
                         >
                           Edit
                         </button>
-
                         <button
                           className="action-btn delete-btn"
                           onClick={() => handleDelete(a.id)}
@@ -183,7 +204,6 @@ export default function AdminAthletesPage() {
                         >
                           Save
                         </button>
-
                         <button
                           className="action-btn cancel-btn"
                           onClick={cancelEdit}
@@ -193,7 +213,6 @@ export default function AdminAthletesPage() {
                       </>
                     )}
                   </td>
-
                 </tr>
               );
             })}
