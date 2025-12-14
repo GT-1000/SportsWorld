@@ -10,7 +10,7 @@ using SportsWorld.Api.Contexts;
 namespace SportsWorld.Api.Migrations
 {
     [DbContext(typeof(SportsWorldContext))]
-    [Migration("20251212083009_InitialCreate")]
+    [Migration("20251214012820_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

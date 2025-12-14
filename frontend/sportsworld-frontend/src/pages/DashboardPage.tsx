@@ -1,3 +1,10 @@
+import FinanceOverview from "../components/FinanceOverview";
+
 export default function DashboardPage() {
-  return <h1>Dashboard</h1>;
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <FinanceOverview />
+    </div>
+  );
 }
