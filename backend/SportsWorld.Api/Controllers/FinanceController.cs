@@ -37,4 +37,32 @@ public async Task<ActionResult<Finance>> GetFinance()
     return Ok(finance);
 }
 
+[HttpPut("loan")]
+public async Task<IActionResult> AddLoan([FromBody] decimal amount)
+{
+    try
+    {
+        if (amount <= 0)
+        {
+            return BadRequest("Invalid loan amount");
+        }
+
+        var finance = await _context.Finances.FirstOrDefaultAsync();
+
+        if (finance == null)
+        {
+            return NotFound();
+        }
+
+        finance.MoneyLeft += amount;
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+    catch
+    {
+        return StatusCode(500);
+    }
+}
+
 }

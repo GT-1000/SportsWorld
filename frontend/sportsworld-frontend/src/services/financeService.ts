@@ -11,5 +11,14 @@ export const financeService = {
   async getFinance(): Promise<Finance> {
     const response = await fetch(API_URL);
     return await response.json();
+  },
+  
+  async addLoan(amount: number): Promise<void> {
+    await fetch (`${API_URL}/loan`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(amount),
+    })
   }
 };
+

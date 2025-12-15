@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { financeService } from "../services/financeService";
 
-export default function FinanceOverview() {
+export default function FinanceOverview({refreshKey}: {refreshKey: number}) {
   const [finance, setFinance] = useState<{
     moneyLeft: number;
     numberOfPurchases: number;
@@ -12,7 +12,7 @@ export default function FinanceOverview() {
     financeService.getFinance()
       .then(setFinance)
       .catch(() => setFinance(null));
-  }, []);
+  }, [refreshKey]);
 
   if (!finance) {
     return <p>Could not load financial data</p>;
