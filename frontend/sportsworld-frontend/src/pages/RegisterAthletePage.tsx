@@ -51,7 +51,7 @@ export default function RegisterAthletePage() {
 
       await athleteService.createAthlete(newAthlete);
 
-      setMessage("Athlete successfully registered! 🎉");
+      setMessage("Athlete successfully registered!");
       setName("");
       setPrice(0);
       setGender("Male");

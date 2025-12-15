@@ -23,12 +23,14 @@ public class AthletesController : ControllerBase
         return await _context.Athletes.ToListAsync();
     }
 
-    // GET: api/athletes/search?name=Messi
+    // GET: api/athletes/search?name=example
     [HttpGet("search")]
     public async Task<ActionResult<IEnumerable<Athlete>>> SearchAthletes(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
+        {
             return await _context.Athletes.ToListAsync();
+        }
 
         return await _context.Athletes
             .Where(a => a.Name.ToLower().Contains(name.ToLower()))
@@ -40,7 +42,7 @@ public class AthletesController : ControllerBase
     public async Task<ActionResult<IEnumerable<Athlete>>> GetNotPurchased()
     {
         return await _context.Athletes
-            .Where(a => a.PurchaseStatus == false)
+            .Where(a => !a.PurchaseStatus)
             .ToListAsync();
     }
 
@@ -61,7 +63,9 @@ public class AthletesController : ControllerBase
         var athlete = await _context.Athletes.FindAsync(id);
 
         if (athlete == null)
+        {
             return NotFound();
+        }
 
         return athlete;
     }
@@ -71,8 +75,11 @@ public class AthletesController : ControllerBase
     public async Task<IActionResult> DeleteAthlete(int id)
     {
         var athlete = await _context.Athletes.FindAsync(id);
+
         if (athlete == null)
+        {
             return NotFound();
+        }
 
         _context.Athletes.Remove(athlete);
         await _context.SaveChangesAsync();
@@ -85,11 +92,16 @@ public class AthletesController : ControllerBase
     public async Task<IActionResult> UpdateAthlete(int id, Athlete updatedAthlete)
     {
         if (id != updatedAthlete.Id)
+        {
             return BadRequest();
+        }
 
         var athlete = await _context.Athletes.FindAsync(id);
+
         if (athlete == null)
+        {
             return NotFound();
+        }
 
         athlete.Name = updatedAthlete.Name;
         athlete.Gender = updatedAthlete.Gender;
@@ -101,4 +113,35 @@ public class AthletesController : ControllerBase
 
         return NoContent();
     }
+
+    // PUT: api/athletes/purchase/{id}
+[HttpPut("purchase/{id}")]
+public async Task<IActionResult> PurchaseAthlete(int id)
+{
+    var athlete = await _context.Athletes.FindAsync(id);
+    if (athlete == null)
+        return NotFound();
+
+    if (athlete.PurchaseStatus)
+        return BadRequest("Athlete already purchased");
+
+    var finance = await _context.Finances.FirstOrDefaultAsync();
+    if (finance == null)
+        return BadRequest("Finance not initialized");
+
+    if (finance.MoneyLeft < athlete.Price)
+        return BadRequest("Not enough money");
+
+    // Update athlete
+    athlete.PurchaseStatus = true;
+
+    // Update finance
+    finance.MoneyLeft -= athlete.Price;
+    finance.MoneySpent += athlete.Price;
+    finance.NumberOfPurchases += 1;
+
+    await _context.SaveChangesAsync();
+    return NoContent();
+}
+
 }

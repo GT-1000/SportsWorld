@@ -16,25 +16,25 @@ public class FinanceController : ControllerBase
         _context = context;
     }
 
-    // GET: api/finance
-    [HttpGet]
-    public async Task<ActionResult<Finance>> GetFinance()
+[HttpGet]
+public async Task<ActionResult<Finance>> GetFinance()
+{
+    var finance = await _context.Finances.FirstOrDefaultAsync();
+
+    if (finance == null)
     {
-        var finance = await _context.Finances.FirstOrDefaultAsync();
-
-        if (finance == null)
+        finance = new Finance
         {
-            finance = new Finance
-            {
-                MoneyLeft = 0,
-                NumberOfPurchases = 0,
-                MoneySpent = 0
-            };
+            MoneyLeft = 10_000_000,
+            MoneySpent = 0,
+            NumberOfPurchases = 0
+        };
 
-            _context.Finances.Add(finance);
-            await _context.SaveChangesAsync();
-        }
-
-        return finance;
+        _context.Finances.Add(finance);
+        await _context.SaveChangesAsync();
     }
+
+    return Ok(finance);
+}
+
 }
