@@ -5,24 +5,46 @@ export default function RegisterAthletePage() {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [price, setPrice] = useState(0);
-  const [image, setImage] = useState("");
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadImage(): Promise<string> {
+    if (!selectedFile) return "";
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const response = await fetch("http://localhost:5050/api/imageupload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    return data.imageUrl;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    setUploading(true);
+
+    const imageUrl = await uploadImage();
 
     await athleteService.createAthlete({
       id: 0,
       name,
       gender,
       price,
-      image,
+      image: imageUrl,
       purchaseStatus: false,
     });
 
     setName("");
     setGender("");
     setPrice(0);
-    setImage("");
+    setSelectedFile(null);
+    setUploading(false);
   }
 
   return (
@@ -50,26 +72,33 @@ export default function RegisterAthletePage() {
         />
 
         <input
-          className="w-full border rounded px-3 py-2"
           type="number"
+          className="w-full border rounded px-3 py-2"
           placeholder="Price"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
           required
         />
 
+        {/* 👇 FILE UPLOAD FRA FINDER */}
         <input
-          className="w-full border rounded px-3 py-2"
-          placeholder="Image URL"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
+          type="file"
+          accept="image/*"
+          className="w-full"
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              setSelectedFile(e.target.files[0]);
+            }
+          }}
+          required
         />
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          disabled={uploading}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          Register athlete
+          {uploading ? "Uploading..." : "Register athlete"}
         </button>
       </form>
     </div>
