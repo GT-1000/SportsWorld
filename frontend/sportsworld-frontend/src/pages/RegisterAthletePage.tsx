@@ -3,108 +3,75 @@ import { athleteService } from "../services/athleteService";
 
 export default function RegisterAthletePage() {
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("Male");
+  const [gender, setGender] = useState("");
   const [price, setPrice] = useState(0);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [image, setImage] = useState("");
 
-  
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
-    }
-  }
-
-  
-  async function uploadImage() : Promise<string> {
-    if (!selectedFile) return "";
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    const response = await fetch("http://localhost:5050/api/ImageUpload", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    return data.imageUrl;
-  }
-
-  // Når man trykker "Register Athlete"
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setUploading(true);
 
-    try {
-      const imageUrl = await uploadImage();
+    await athleteService.createAthlete({
+      id: 0,
+      name,
+      gender,
+      price,
+      image,
+      purchaseStatus: false,
+    });
 
-      const newAthlete = {
-        id: 0,
-        name,
-        gender,
-        price,
-        image: imageUrl,
-        purchaseStatus: false
-      };
-
-      await athleteService.createAthlete(newAthlete);
-
-      setMessage("Athlete successfully registered!");
-      setName("");
-      setPrice(0);
-      setGender("Male");
-      setSelectedFile(null);
-
-    } catch (err) {
-      console.error("Error registering athlete:", err);
-      setMessage("Something went wrong.");
-    }
-
-    setUploading(false);
+    setName("");
+    setGender("");
+    setPrice(0);
+    setImage("");
   }
 
   return (
-    <div>
-      <h1>Register Athlete</h1>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <h1 className="text-4xl font-bold mb-6">Register athlete</h1>
 
-      <form onSubmit={handleSubmit}>
-
-        <label>Name:</label>
-        <input 
-          type="text" 
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow max-w-md space-y-4"
+      >
+        <input
+          className="w-full border rounded px-3 py-2"
+          placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
 
-        <label>Gender:</label>
-        <select 
+        <input
+          className="w-full border rounded px-3 py-2"
+          placeholder="Gender"
           value={gender}
           onChange={(e) => setGender(e.target.value)}
-        >
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
+          required
+        />
 
-        <label>Price:</label>
-        <input 
+        <input
+          className="w-full border rounded px-3 py-2"
           type="number"
+          placeholder="Price"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
           required
         />
 
-        <label>Upload Image:</label>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
+        <input
+          className="w-full border rounded px-3 py-2"
+          placeholder="Image URL"
+          value={image}
+          onChange={(e) => setImage(e.target.value)}
+        />
 
-        <button type="submit" disabled={uploading}>
-          {uploading ? "Uploading..." : "Register Athlete"}
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Register athlete
         </button>
       </form>
-
-      {message && <p>{message}</p>}
     </div>
   );
 }

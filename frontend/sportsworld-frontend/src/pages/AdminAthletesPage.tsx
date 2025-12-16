@@ -1,223 +1,139 @@
 import { useEffect, useState } from "react";
-import type { Athlete } from "../interfaces/athlete";
 import { athleteService } from "../services/athleteService";
+import type { Athlete } from "../interfaces/athlete";
 
 export default function AdminAthletesPage() {
   const [athletes, setAthletes] = useState<Athlete[]>([]);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editData, setEditData] = useState<Athlete | null>(null);
-
-  useEffect(() => {
-    loadAthletes();
-  }, []);
+  const [editing, setEditing] = useState<Athlete | null>(null);
 
   async function loadAthletes() {
     const data = await athleteService.getAllAthletes();
     setAthletes(data);
   }
 
-  async function handleSearch(query: string) {
-    if (query.trim() === "") {
-      loadAthletes();
-      return;
-    }
-    const results = await athleteService.searchAthletes(query);
-    setAthletes(results);
-  }
-
   async function handleDelete(id: number) {
-    if (!confirm("Are you sure you want to delete this athlete?")) return;
     await athleteService.deleteAthlete(id);
-    await loadAthletes();
-  }
-
-  function startEdit(a: Athlete) {
-    setEditingId(a.id);
-    setEditData({ ...a });
-  }
-
-  function handleEditChange(
-    field: keyof Athlete,
-    value: string | number | boolean
-  ) {
-    if (!editData) return;
-    setEditData({ ...editData, [field]: value });
-  }
-
-  async function saveEdit() {
-    if (!editData) return;
-    await athleteService.updateAthlete(editData);
-    setEditingId(null);
-    setEditData(null);
     loadAthletes();
   }
 
-  function cancelEdit() {
-    setEditingId(null);
-    setEditData(null);
+  async function handleSave() {
+    if (!editing) return;
+
+    await athleteService.updateAthlete(editing);
+    setEditing(null);
+    loadAthletes();
   }
 
+  useEffect(() => {
+    loadAthletes();
+  }, []);
+
   return (
-    <div className="admin-container">
-      <h1 className="admin-title">Administer Athletes</h1>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <h1 className="text-4xl font-bold mb-6">
+        Administer athletes
+      </h1>
 
-      <input
-        type="text"
-        placeholder="Search by name"
-        onChange={(e) => handleSearch(e.target.value)}
-        className="search-input"
-      />
-
-      {athletes.length === 0 ? (
-        <p>No athletes found.</p>
-      ) : (
-        <table className="athlete-table">
-          <thead>
+      <div className="bg-white p-6 rounded-lg shadow">
+        <table className="w-full text-left">
+          <thead className="text-gray-600 border-b">
             <tr>
-              <th>Image</th>
-              <th>Name</th>
+              <th className="py-2">Name</th>
               <th>Gender</th>
               <th>Price</th>
-              <th>Purchased</th>
-              <th>Actions</th>
+              <th>Status</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {athletes.map((a) => {
-              const isEditing = editingId === a.id;
+            {athletes.map((a) => (
+              <tr key={a.id} className="border-b last:border-none">
+                <td className="py-3">{a.name}</td>
+                <td>{a.gender}</td>
+                <td>{a.price}</td>
+                <td>
+                  {a.purchaseStatus ? (
+                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">
+                      Purchased
+                    </span>
+                  ) : (
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">
+                      Available
+                    </span>
+                  )}
+                </td>
+                <td className="text-center space-x-2">
+                  <button
+                    className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                    onClick={() => setEditing(a)}
+                  >
+                    Edit
+                  </button>
 
-              return (
-                <tr key={a.id}>
-                  {/* Image */}
-                  <td>
-                    {a.image ? (
-                      <img
-                        src={a.image}
-                        alt={a.name}
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    ) : (
-                      "No image"
-                    )}
-                  </td>
-
-                  {/* Name */}
-                  <td>
-                    {isEditing ? (
-                      <input
-                        value={editData?.name || ""}
-                        onChange={(e) =>
-                          handleEditChange("name", e.target.value)
-                        }
-                        className="edit-input"
-                      />
-                    ) : (
-                      a.name
-                    )}
-                  </td>
-
-                  {/* Gender */}
-                  <td>
-                    {isEditing ? (
-                      <select
-                        value={editData?.gender || ""}
-                        onChange={(e) =>
-                          handleEditChange("gender", e.target.value)
-                        }
-                        className="edit-select"
-                      >
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
-                    ) : (
-                      a.gender
-                    )}
-                  </td>
-
-                  {/* Price */}
-                  <td>
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        value={editData?.price || ""}
-                        onChange={(e) =>
-                          handleEditChange("price", Number(e.target.value))
-                        }
-                        className="edit-input"
-                      />
-                    ) : (
-                      a.price
-                    )}
-                  </td>
-
-                  {/* Purchased */}
-                  <td>
-                    {isEditing ? (
-                      <select
-                        value={editData?.purchaseStatus ? "true" : "false"}
-                        onChange={(e) =>
-                          handleEditChange(
-                            "purchaseStatus",
-                            e.target.value === "true"
-                          )
-                        }
-                        className="edit-select"
-                      >
-                        <option value="false">No</option>
-                        <option value="true">Yes</option>
-                      </select>
-                    ) : a.purchaseStatus ? (
-                      "Yes"
-                    ) : (
-                      "No"
-                    )}
-                  </td>
-
-                  {/* Actions */}
-                  <td>
-                    {!isEditing ? (
-                      <>
-                        <button
-                          className="action-btn edit-btn"
-                          onClick={() => startEdit(a)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="action-btn delete-btn"
-                          onClick={() => handleDelete(a.id)}
-                        >
-                          Delete
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          className="action-btn save-btn"
-                          onClick={saveEdit}
-                        >
-                          Save
-                        </button>
-                        <button
-                          className="action-btn cancel-btn"
-                          onClick={cancelEdit}
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
+                  <button
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    onClick={() => handleDelete(a.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
+      </div>
+
+      {editing && (
+        <div className="mt-6 bg-white p-6 rounded-lg shadow max-w-lg">
+          <h2 className="text-xl font-semibold mb-4">
+            Edit athlete
+          </h2>
+
+          <input
+            className="w-full border rounded px-3 py-2 mb-3"
+            value={editing.name}
+            onChange={(e) =>
+              setEditing({ ...editing, name: e.target.value })
+            }
+          />
+
+          <input
+            className="w-full border rounded px-3 py-2 mb-3"
+            value={editing.gender}
+            onChange={(e) =>
+              setEditing({ ...editing, gender: e.target.value })
+            }
+          />
+
+          <input
+            type="number"
+            className="w-full border rounded px-3 py-2 mb-4"
+            value={editing.price}
+            onChange={(e) =>
+              setEditing({
+                ...editing,
+                price: Number(e.target.value),
+              })
+            }
+          />
+
+          <div className="flex gap-2">
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+
+            <button
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              onClick={() => setEditing(null)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

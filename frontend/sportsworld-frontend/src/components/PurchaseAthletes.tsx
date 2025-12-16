@@ -4,18 +4,21 @@ import type { Athlete } from "../interfaces/athlete";
 
 export default function PurchaseAthletes() {
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [error, setError] = useState("");
 
   async function loadAthletes() {
-    const response = await fetch(
-      "http://localhost:5050/api/athletes/notpurchased"
-    );
-    const data = await response.json();
-    setAthletes(data);
+    const data = await athleteService.getAllAthletes();
+    const available = data.filter(a => !a.purchaseStatus);
+    setAthletes(available);
   }
 
   async function handlePurchase(id: number) {
-    await athleteService.purchaseAthlete(id);
-    await loadAthletes();
+    try {
+      await athleteService.purchaseAthlete(id);
+      loadAthletes();
+    } catch {
+      setError("Purchase failed");
+    }
   }
 
   useEffect(() => {
@@ -24,16 +27,33 @@ export default function PurchaseAthletes() {
 
   return (
     <div>
-      <h2>Purchase Athlete</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        Purchase athlete
+      </h2>
+
+      {error && (
+        <p className="text-red-600 mb-2">{error}</p>
+      )}
 
       {athletes.length === 0 ? (
-        <p>No athletes available for purchase.</p>
+        <p className="text-gray-500">
+          No athletes available for purchase.
+        </p>
       ) : (
-        <ul>
+        <ul className="space-y-3">
           {athletes.map((a) => (
-            <li key={a.id}>
-              {a.name} – {a.price}
-              <button onClick={() => handlePurchase(a.id)}>
+            <li
+              key={a.id}
+              className="flex justify-between items-center border-b pb-2"
+            >
+              <span>
+                {a.name} – {a.price}
+              </span>
+
+              <button
+                className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+                onClick={() => handlePurchase(a.id)}
+              >
                 Purchase
               </button>
             </li>

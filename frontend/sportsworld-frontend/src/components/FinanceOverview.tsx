@@ -1,30 +1,52 @@
 import { useEffect, useState } from "react";
 import { financeService } from "../services/financeService";
 
-export default function FinanceOverview({refreshKey}: {refreshKey: number}) {
-  const [finance, setFinance] = useState<{
-    moneyLeft: number;
-    numberOfPurchases: number;
-    moneySpent: number;
-  } | null>(null);
+type Finance = {
+  moneyLeft: number;
+  numberOfPurchases: number;
+  moneySpent: number;
+};
+
+export default function FinanceOverview({ refreshKey }: { refreshKey: number }) {
+  const [finance, setFinance] = useState<Finance | null>(null);
 
   useEffect(() => {
-    financeService.getFinance()
+    financeService
+      .getFinance()
       .then(setFinance)
       .catch(() => setFinance(null));
   }, [refreshKey]);
 
   if (!finance) {
-    return <p>Could not load financial data</p>;
+    return (
+      <p className="text-red-600 font-medium">
+        Could not load financial data
+      </p>
+    );
   }
 
   return (
     <div>
-      <h2>Financial situation</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        Financial situation
+      </h2>
 
-      <p>Money left: {finance.moneyLeft}</p>
-      <p>Number of purchases: {finance.numberOfPurchases}</p>
-      <p>Total spending: {finance.moneySpent}</p>
+      <div className="space-y-2 text-gray-700">
+        <p>
+          <span className="font-medium">Money left:</span>{" "}
+          {finance.moneyLeft}
+        </p>
+
+        <p>
+          <span className="font-medium">Number of purchases:</span>{" "}
+          {finance.numberOfPurchases}
+        </p>
+
+        <p>
+          <span className="font-medium">Total spending:</span>{" "}
+          {finance.moneySpent}
+        </p>
+      </div>
     </div>
   );
 }
