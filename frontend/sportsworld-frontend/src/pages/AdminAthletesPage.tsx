@@ -81,7 +81,6 @@ export default function AdminAthletesPage() {
                 <td>{a.gender}</td>
                 <td>{a.price}</td>
 
-                {/* ✅ STATUS MED FARGER */}
                 <td>
                   {a.purchaseStatus ? (
                     <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-sm">
