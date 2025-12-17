@@ -8,8 +8,7 @@ export default function PurchaseAthletes() {
 
   async function loadAthletes() {
     const data = await athleteService.getAllAthletes();
-    const available = data.filter(a => !a.purchaseStatus);
-    setAthletes(available);
+    setAthletes(data.filter(a => !a.purchaseStatus));
   }
 
   async function handlePurchase(id: number) {
@@ -26,33 +25,42 @@ export default function PurchaseAthletes() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-white p-6 rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">
         Purchase athlete
       </h2>
 
-      {error && (
-        <p className="text-red-600 mb-2">{error}</p>
-      )}
+      {error && <p className="text-red-600 mb-2">{error}</p>}
 
       {athletes.length === 0 ? (
-        <p className="text-gray-500">
+        <p className="text-gray-600">
           No athletes available for purchase.
         </p>
       ) : (
-        <ul className="space-y-3">
+        <ul className="space-y-4">
           {athletes.map((a) => (
             <li
               key={a.id}
-              className="flex justify-between items-center border-b pb-2"
+              className="flex items-center justify-between gap-4 border-b pb-3"
             >
-              <span>
-                {a.name} – {a.price}
-              </span>
+              <div className="flex items-center gap-4">
+                {a.image && (
+                  <img
+                    src={a.image}
+                    alt={a.name}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+                )}
+
+                <div>
+                  <p className="font-medium">{a.name}</p>
+                  <p className="text-sm text-gray-600">{a.price}</p>
+                </div>
+              </div>
 
               <button
-                className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
                 onClick={() => handlePurchase(a.id)}
+                className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
               >
                 Purchase
               </button>

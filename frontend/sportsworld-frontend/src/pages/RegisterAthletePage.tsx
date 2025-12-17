@@ -5,46 +5,53 @@ export default function RegisterAthletePage() {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [price, setPrice] = useState(0);
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
-  async function uploadImage(): Promise<string> {
-    if (!selectedFile) return "";
+  async function uploadImage(): Promise<string | null> {
+    if (!selectedFile) return null;
 
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    const response = await fetch("http://localhost:5050/api/imageupload", {
+    const res = await fetch("http://localhost:5050/api/imageupload", {
       method: "POST",
       body: formData,
     });
 
-    const data = await response.json();
+    if (!res.ok) throw new Error("Image upload failed");
+
+    const data = await res.json();
     return data.imageUrl;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
+    setError("");
     setUploading(true);
 
-    const imageUrl = await uploadImage();
+    try {
+      const imageUrl = await uploadImage();
 
-    await athleteService.createAthlete({
-      id: 0,
-      name,
-      gender,
-      price,
-      image: imageUrl,
-      purchaseStatus: false,
-    });
+      await athleteService.createAthlete({
+        id: 0,
+        name,
+        gender,
+        price,
+        image: imageUrl ?? "",
+        purchaseStatus: false,
+      });
 
-    setName("");
-    setGender("");
-    setPrice(0);
-    setSelectedFile(null);
-    setUploading(false);
+      setName("");
+      setGender("");
+      setPrice(0);
+      setSelectedFile(null);
+    } catch {
+      setError("Failed to register athlete");
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -80,25 +87,41 @@ export default function RegisterAthletePage() {
           required
         />
 
-        {/* 👇 FILE UPLOAD FRA FINDER */}
-        <input
-          type="file"
-          accept="image/*"
-          className="w-full"
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length > 0) {
-              setSelectedFile(e.target.files[0]);
-            }
-          }}
-          required
-        />
+        <div className="space-y-1">
+          <input
+            id="imageUpload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setSelectedFile(e.target.files[0]);
+              }
+            }}
+          />
+
+          <label
+            htmlFor="imageUpload"
+            className="inline-block cursor-pointer bg-gray-200 px-1 py-2 rounded hover:bg-gray-300"
+          >
+            Choose image
+          </label>
+
+          {selectedFile && (
+            <p className="text-sm text-gray-600">
+              Selected: {selectedFile.name}
+            </p>
+          )}
+        </div>
+
+        {error && <p className="text-red-600">{error}</p>}
 
         <button
           type="submit"
           disabled={uploading}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          {uploading ? "Uploading..." : "Register athlete"}
+          {uploading ? "Saving..." : "Register athlete"}
         </button>
       </form>
     </div>
